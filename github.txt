@@ -1,0 +1,11 @@
+echo "# simple-crud-server-with-mongo" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M master
+git remote add origin https://github.com/Taanveer22/simple-crud-server-with-mongo.git
+git push -u origin master
+
+git remote add origin https://github.com/Taanveer22/simple-crud-server-with-mongo.git
+git branch -M master
+git push -u origin master
