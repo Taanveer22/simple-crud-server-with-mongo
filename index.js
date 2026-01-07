@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // =====================taanveer469_db_user===============
+// send data from server to database via mongodb
 // =====================hbjcd6XrTBVpiTRI==================
 const uri =
   "mongodb+srv://taanveer469_db_user:hbjcd6XrTBVpiTRI@cluster0.89rnkti.mongodb.net/?appName=Cluster0";
@@ -33,6 +34,12 @@ async function run() {
     const myDb = client.db("usersDb");
     const myColl = myDb.collection("usersColl");
 
+    app.get("/users", async (req, res) => {
+      const myCursor = myColl.find();
+      const result = await myCursor.toArray();
+      res.send(result);
+    });
+
     //========== must need to use async await======
     app.post("/users", async (req, res) => {
       const myUserDoc = req.body;
@@ -48,10 +55,11 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-  } finally {
+  } 
+  finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
-    console.log("finally block run");
+    console.log("finally function run");
   }
 }
 run().catch(console.dir);
