@@ -1,7 +1,7 @@
 // required items
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // set items
 const port = process.env.PORT || 5000;
@@ -34,19 +34,30 @@ async function run() {
     const myDb = client.db("usersDb");
     const myColl = myDb.collection("usersColl");
 
+    //========== must need to use async await======
+    // get() method
     app.get("/users", async (req, res) => {
       const myCursor = myColl.find();
       const result = await myCursor.toArray();
       res.send(result);
     });
 
-    //========== must need to use async await======
+    // post() method
     app.post("/users", async (req, res) => {
       const myUserDoc = req.body;
       console.log("new user ", myUserDoc);
-
       // Add 'await' here to wait for the DB to finish
       const result = await myColl.insertOne(myUserDoc);
+      res.send(result);
+    });
+
+    // delete() method
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("delete from server", id);
+      // Convert the string ID into a MongoDB ObjectId
+      const query = { _id: new ObjectId(id) };
+      const result = await myColl.deleteOne(query);
       res.send(result);
     });
 
@@ -55,8 +66,7 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-  } 
-  finally {
+  } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
     console.log("finally function run");
