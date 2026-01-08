@@ -42,12 +42,40 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("find from server", id);
+      // Convert the string ID into a MongoDB ObjectId
+      const query = { _id: new ObjectId(id) };
+      const result = await myColl.findOne(query);
+      res.send(result);
+    });
+
     // post() method
     app.post("/users", async (req, res) => {
       const myUserDoc = req.body;
       console.log("new user ", myUserDoc);
       // Add 'await' here to wait for the DB to finish
       const result = await myColl.insertOne(myUserDoc);
+      res.send(result);
+    });
+
+    // put() method
+    app.put("/users/:id", async (req, res) => {
+      // 1st part
+      const id = req.params.id;
+      const user = req.body;
+      console.log("updated user", user);
+      // 2nd part
+      const query = { _id: new ObjectId(id) };
+      const update = {
+        $set: {
+          name: user.name,
+          email: user.email,
+        },
+      };
+      const options = { upsert: true };
+      const result = await myColl.updateOne(query, update, options);
       res.send(result);
     });
 
